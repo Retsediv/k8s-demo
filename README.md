@@ -14,5 +14,9 @@ docker push zhuravchak/flask-app:latest
 2. Run Kubernetes cluster
 
 ```bash
-# TODO
+minikube start
+kubectl apply -f .
+minikube tunnel
 ```
+
+Open on http://localhost:80/

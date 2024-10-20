@@ -1,41 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: demo-app
+  name: db
   labels:
-    app: app
+    app: db
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: app
+      app: db
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
-        app: app
+        app: db
     spec:
       containers:
-        - name: nextcloud
-          image: nextcloud:apache
+        - name: db
+          image: postgres:alpine
           ports:
-            - containerPort: 80
-          workingDir: /app
+            - containerPort: 5432
           volumeMounts:
-            - mountPath: /var/www/html
-              name: nc-data
-
+            - mountPath: /var/lib/postgresql/data
+              name: db-data
           env:
             - name: POSTGRES_DB
               valueFrom:
                 configMapKeyRef:
                   name: app-configmap
                   key: database-name
-            - name: POSTGRES_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: app-configmap
-                  key: database-host
-
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -46,8 +40,9 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: postgres-username
+
       restartPolicy: Always
       volumes:
-        - name: nc-data
+        - name: db-data
           persistentVolumeClaim:
-            claimName: nc-data
+            claimName: db-data

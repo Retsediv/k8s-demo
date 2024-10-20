@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-demo-app
+  labels:
+    app: flask-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-app
+  template:
+    metadata:
+      labels:
+        app: flask-app
+    spec:
+      containers:
+        - name: flask-app
+          image: zhuravchak/flask-app:latest
+          ports:
+            - containerPort: 8000
+          workingDir: /app
+
+          # env:
+          #   - name: MYSQL_DB
+          #     #value: todos
+          #     valueFrom:
+          #       configMapKeyRef:
+          #         name: demo-app-configmap
+          #         key: database_name
+          #   - name: MYSQL_HOST
+          #     #value: mysql
+          #     valueFrom:
+          #       configMapKeyRef:
+          #         name: demo-app-configmap
+          #         key: database_host
+          #   - name: MYSQL_PASSWORD
+          #     #value: secret
+          #     valueFrom:
+          #       secretKeyRef:
+          #         name: mysql-secret
+          #         key: mysql-password
+          #   - name: MYSQL_USER
+          #     #value: root
+          #     valueFrom:
+          #       secretKeyRef:
+          #         name: mysql-secret
+          #         key: mysql-username
+      restartPolicy: Always
